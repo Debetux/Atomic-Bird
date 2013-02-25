@@ -78,15 +78,18 @@
             # On converti la date relative en un timestamp absolu. On la convertira en date valide plus tard, grâce à la fonction date et au paramètre « c »
             $tweets_date[$key] = strtotimestamp($tweets_date[$key]);
 
-            $atom .=
-            '<entry>
-                <id>https://twitter.com' . $tweets_url[$key] . '</id>
-                <title><![CDATA[' . title_formated($tweets[$key]). ']]></title>
-                <updated>' . date('c', $tweets_date[$key]) . '</updated>
-                <link href="https://twitter.com' . $tweets_url[$key] . '"/>
-                <content type="html"><![CDATA[' . str_replace(' href="/', ' href="https://twitter.com/', $tweets[$key]) . ']]></content>
-            </entry>
-            ';
+            $tweets_without_tags = strip_tags($tweets[$key]);
+            if((! $show_mentions && $tweets_without_tags{0} != '@') || $show_mentions):
+                $atom .=
+                '<entry>
+                    <id>https://twitter.com' . $tweets_url[$key] . '</id>
+                    <title><![CDATA[' . title_formated($tweets[$key]). ']]></title>
+                    <updated>' . date('c', $tweets_date[$key]) . '</updated>
+                    <link href="https://twitter.com' . $tweets_url[$key] . '"/>
+                    <content type="html"><![CDATA[' . str_replace(' href="/', ' href="https://twitter.com/', $tweets[$key]) . ']]></content>
+                </entry>
+                ';
+            endif;
 
             $i++;
         endforeach;
